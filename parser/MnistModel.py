@@ -16,12 +16,8 @@ class MnistModel(torch.nn.Module):
         self.activation4 = torch.nn.Sigmoid()
 
     def forward(self, x):
-        x = self.linear1(x)
-        x = self.activation1(x)
-        x = self.linear2(x)
-        x = self.activation2(x)
-        x = self.linear3(x)
-        x = self.activation3(x)
-        x = self.linear4(x)
-        x = self.activation4(x)
+        x = self.activation1(self.linear1(x))
+        x = self.activation2(self.linear2(x))
+        x = self.activation3(self.linear3(x))
+        x = self.activation4(self.linear4(x))
         return x
