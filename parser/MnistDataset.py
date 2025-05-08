@@ -19,4 +19,4 @@ class MnistDataset(torch.utils.data.Dataset):
         with open(path, 'r') as f:
             for line in f:
                 nums = [int(x) for x in line.split(',')]
-                self.data.append({'label': nums[0], 'pixels': nums[1:]})
+                self.data.append({'label': str(nums[0]), 'pixels': nums[1:]})
