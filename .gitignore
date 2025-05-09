@@ -3,3 +3,4 @@ venv/
 **/__pycache__/*
 parser/tinytest.txt
 parser/runs
+parser/model_*

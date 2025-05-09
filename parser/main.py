@@ -18,8 +18,9 @@ def train_one_epoch(epoch_index, tb_writer, model):
     # index and do some intra-epoch reporting
     for i, data in enumerate(training_loader):
         # Every data instance is an input plus label pair
-        labels, inputs = data.values()
-        inputs = torch.tensor(inputs, dtype=torch.float32)
+        _, labels, inputs = data.values()
+        # labels = torch.tensor(labels, dtype=torch.float32)
+        torch.squeeze(labels)
 
         # Zero your gradients for every batch!
         optimizer.zero_grad()
@@ -47,10 +48,10 @@ def train_one_epoch(epoch_index, tb_writer, model):
 
 if __name__ == '__main__':
 
-    transform = torchvision.transforms.Compose([Downscale(16), ToTensor()])
+    transformers = torchvision.transforms.Compose([Downscale(16), ToTensor()])
 
-    training_set = MnistDataset('MNIST_CSV/mnist_train.csv', transform=transform)
-    validation_set = MnistDataset('MNIST_CSV/mnist_test.csv', transform=transform)
+    training_set = MnistDataset('MNIST_CSV/mnist_train.csv', transform=transformers)
+    validation_set = MnistDataset('MNIST_CSV/mnist_test.csv', transform=transformers)
 
     training_loader = torch.utils.data.DataLoader(training_set, batch_size=1, shuffle=True)
     validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=1, shuffle=False)
@@ -89,7 +90,7 @@ if __name__ == '__main__':
         # Disable gradient computation and reduce memory consumption.
         with torch.no_grad():
             for i, vdata in enumerate(validation_loader):
-                vinputs, vlabels = vdata
+                _, vlabels, vinputs = vdata.values()
                 voutputs = mnist_model(vinputs)
                 vloss = loss_fn(voutputs, vlabels)
                 running_vloss += vloss
