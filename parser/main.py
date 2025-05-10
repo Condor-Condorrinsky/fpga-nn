@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from datetime import datetime
 
-def train_one_epoch(epoch_index, tb_writer, model):
+def train_one_epoch(epoch_index, tb_writer, model, loss_fn):
     running_loss = 0.
     last_loss = 0.
 
@@ -19,8 +19,6 @@ def train_one_epoch(epoch_index, tb_writer, model):
     for i, data in enumerate(training_loader):
         # Every data instance is an input plus label pair
         _, labels, inputs = data.values()
-        # labels = torch.tensor(labels, dtype=torch.float32)
-        torch.squeeze(labels)
 
         # Zero your gradients for every batch!
         optimizer.zero_grad()
@@ -53,15 +51,15 @@ if __name__ == '__main__':
     training_set = MnistDataset('MNIST_CSV/mnist_train.csv', transform=transformers)
     validation_set = MnistDataset('MNIST_CSV/mnist_test.csv', transform=transformers)
 
-    training_loader = torch.utils.data.DataLoader(training_set, batch_size=1, shuffle=True)
-    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=1, shuffle=False)
+    training_loader = torch.utils.data.DataLoader(training_set, batch_size=8, shuffle=True)
+    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=8, shuffle=False)
 
     print('Training set has {} instances'.format(len(training_set)))
     print('Validation set has {} instances'.format(len(validation_set)))
 
     mnist_model = MnistModel()
 
-    loss_fn = torch.nn.CrossEntropyLoss()
+    loss_fn = torch.nn.MSELoss()
 
     optimizer = torch.optim.SGD(mnist_model.parameters(), lr=0.001, momentum=0.9)
 
@@ -80,7 +78,7 @@ if __name__ == '__main__':
 
         # Make sure gradient tracking is on and do a pass over the data
         mnist_model.train(True)
-        avg_loss = train_one_epoch(epoch_number, writer, mnist_model)
+        avg_loss = train_one_epoch(epoch_number, writer, mnist_model, loss_fn)
 
         running_vloss = 0.0
         # Set the model to evaluation mode, disabling dropout and using population
