@@ -13,9 +13,9 @@ class MnistModel(torch.nn.Module):
         self.linear3 = torch.nn.Linear(16, 10)
         self.activation3 = torch.nn.Sigmoid()
 
-        torch.nn.init.uniform_(self.linear1.weight, -5, 5)
-        torch.nn.init.uniform_(self.linear2.weight, -5, 5)
-        torch.nn.init.uniform_(self.linear3.weight, -5, 5)
+        torch.nn.init.uniform_(self.linear1.weight, -1, 1)
+        torch.nn.init.uniform_(self.linear2.weight, -1, 1)
+        torch.nn.init.uniform_(self.linear3.weight, -1, 1)
 
     def forward(self, x):
         x = self.activation1(self.linear1(x))

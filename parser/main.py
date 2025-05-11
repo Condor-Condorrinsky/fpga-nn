@@ -8,6 +8,7 @@ import torchvision
 from torch.utils.tensorboard import SummaryWriter
 
 from datetime import datetime
+import os
 
 def train_one_epoch(epoch_index, tb_writer, model, loss_fn):
     running_loss = 0.
@@ -51,8 +52,8 @@ if __name__ == '__main__':
     training_set = MnistDataset('MNIST_CSV/mnist_train.csv', transform=transformers)
     validation_set = MnistDataset('MNIST_CSV/mnist_test.csv', transform=transformers)
 
-    training_loader = torch.utils.data.DataLoader(training_set, batch_size=8, shuffle=True)
-    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=8, shuffle=False)
+    training_loader = torch.utils.data.DataLoader(training_set, batch_size=16, shuffle=True)
+    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=16, shuffle=False)
 
     print('Training set has {} instances'.format(len(training_set)))
     print('Validation set has {} instances'.format(len(validation_set)))
@@ -66,10 +67,10 @@ if __name__ == '__main__':
     # Trenowanie
     # Initializing in a separate cell so we can easily add more epochs to the same run
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
+    writer = SummaryWriter('runs/trainer_{}'.format(timestamp))
     epoch_number = 0
 
-    EPOCHS = 5
+    EPOCHS = 25
 
     best_vloss = 1_000_000.
 
@@ -106,7 +107,8 @@ if __name__ == '__main__':
         # Track the best performance and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-            model_path = 'model_{}_{}'.format(timestamp, epoch_number)
+            os.makedirs('models/model_{}'.format(timestamp), exist_ok=True)
+            model_path = 'models/model_{}/epoch_{}'.format(timestamp, epoch_number)
             torch.save(mnist_model.state_dict(), model_path)
 
         epoch_number += 1
