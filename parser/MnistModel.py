@@ -23,6 +23,15 @@ class MnistModel(torch.nn.Module):
         x = self.activation3(self.linear3(x))
         return x
 
+    def forward_one_layer(self, x, layer_name: str):
+        try:
+            attr = getattr(self, layer_name)
+            x = attr(x)
+            return x
+        except AttributeError:
+            print(f"Model has no layer named {layer_name}")
+            return None
+
 if __name__ == '__main__':
     import random
     test = [random.choice(range(256)) for _ in range(784)]

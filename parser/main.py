@@ -2,6 +2,7 @@ from MnistModel import MnistModel
 from MnistDataset import MnistDataset
 from transforms.Downscale import Downscale
 from transforms.ToTensor import ToTensor
+from quantize_model import quantize_model
 
 import torch
 import torchvision
@@ -9,8 +10,9 @@ from torch.utils.tensorboard import SummaryWriter
 
 from datetime import datetime
 import os
+import sys
 
-def train_one_epoch(epoch_index, tb_writer, model, loss_fn):
+def train_one_epoch(epoch_index, tb_writer, model, loss_fn, training_loader, optimizer):
     running_loss = 0.
     last_loss = 0.
 
@@ -45,8 +47,7 @@ def train_one_epoch(epoch_index, tb_writer, model, loss_fn):
 
     return last_loss
 
-if __name__ == '__main__':
-
+def train():
     transformers = torchvision.transforms.Compose([Downscale(16), ToTensor()])
 
     training_set = MnistDataset('MNIST_CSV/mnist_train.csv', transform=transformers)
@@ -67,6 +68,7 @@ if __name__ == '__main__':
     # Trenowanie
     # Initializing in a separate cell so we can easily add more epochs to the same run
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    os.makedirs('runs', exist_ok=True)
     writer = SummaryWriter('runs/trainer_{}'.format(timestamp))
     epoch_number = 0
 
@@ -79,7 +81,7 @@ if __name__ == '__main__':
 
         # Make sure gradient tracking is on and do a pass over the data
         mnist_model.train(True)
-        avg_loss = train_one_epoch(epoch_number, writer, mnist_model, loss_fn)
+        avg_loss = train_one_epoch(epoch_number, writer, mnist_model, loss_fn, training_loader, optimizer)
 
         running_vloss = 0.0
         # Set the model to evaluation mode, disabling dropout and using population
@@ -113,3 +115,8 @@ if __name__ == '__main__':
 
         epoch_number += 1
 
+if __name__ == '__main__':
+    if sys.argv[1] == 'train':
+        train()
+    if sys.argv[1] == 'quantize':
+        quantize_model(sys.argv[2], sys.argv[3])
