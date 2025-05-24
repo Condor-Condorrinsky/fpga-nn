@@ -16,4 +16,6 @@ def quantize_model(model_path: str, output_path: str):
                     test_tensor = torch.tensor([float(i)] * num_of_features, dtype=torch.float32)
                     out = model.forward_one_layer(test_tensor, layer)
                     f.write(f"Layer {layer} quantized for i={i}:\n")
-                    f.write(f"{out[:]}\n")
+                    for val in out:
+                        f.write(f"{val},")
+                    f.write("\n")
