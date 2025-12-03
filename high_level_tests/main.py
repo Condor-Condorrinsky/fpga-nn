@@ -1,5 +1,5 @@
-from MnistModel import MnistModel
-from MnistDataset import MnistDataset
+from mnist.MnistModel import MnistModel
+from mnist.MnistDataset import MnistDataset
 from transforms.Downscale import Downscale
 from transforms.ToTensor import ToTensor
 from quantize_model import quantize_model
@@ -50,8 +50,8 @@ def train_one_epoch(epoch_index, tb_writer, model, loss_fn, training_loader, opt
 def train():
     transformers = torchvision.transforms.Compose([Downscale(16), ToTensor()])
 
-    training_set = MnistDataset('MNIST_CSV/mnist_train.csv', transform=transformers)
-    validation_set = MnistDataset('MNIST_CSV/mnist_test.csv', transform=transformers)
+    training_set = MnistDataset('mnist/MNIST_CSV/mnist_train.csv', transform=transformers)
+    validation_set = MnistDataset('mnist/MNIST_CSV/mnist_test.csv', transform=transformers)
 
     training_loader = torch.utils.data.DataLoader(training_set, batch_size=16, shuffle=True)
     validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=16, shuffle=False)

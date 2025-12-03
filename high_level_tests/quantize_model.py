@@ -1,6 +1,6 @@
 import torch
 
-from MnistModel import MnistModel
+from mnist.MnistModel import MnistModel
 
 def quantize_model(model_path: str, output_path: str):
     model = MnistModel()

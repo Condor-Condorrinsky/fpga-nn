@@ -23,3 +23,15 @@ class SingleNeuron(object):
     def forward(self, x: int | float) -> float:
         return self.activation(self.weight * x + self.bias)
 
+
+def main():
+    random.seed(2025)
+    nn = SingleNeuron(activation_f=SingleNeuron.relu)
+    print(nn)
+    for i in range(-100, 101, 1):
+        x = i / 100
+        print(f'x for i={i}: {nn.forward(x)}')
+
+
+if __name__ == "__main__":
+    main()

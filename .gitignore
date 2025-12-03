@@ -1,6 +1,6 @@
 .idea/
 venv/
 **/__pycache__/*
-parser/tinytest.txt
-parser/runs
-parser/models/
+high_level_tests/tinytest.txt
+high_level_tests/runs
+high_level_tests/models/
