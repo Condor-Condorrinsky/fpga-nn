@@ -60,9 +60,8 @@ def train(training_set: torch.utils.data.Dataset,
     print(f'Training set has {len(training_set)} instances')
     print(f'Validation set has {len(validation_set)} instances')
 
-    neural_network = model()
-    loss_fn = loss_function() # Loss function doesn't require initialization yet
-    optimizer = torch.optim.SGD(neural_network.parameters(), lr=learning_rate, momentum=momentum)
+    loss_fn = loss_function()
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
     # Trenowanie
     # Initializing in a separate cell so we can easily add more epochs to the same run
@@ -76,19 +75,19 @@ def train(training_set: torch.utils.data.Dataset,
         print(f'EPOCH {epoch_number + 1}:')
 
         # Make sure gradient tracking is on and do a pass over the data
-        neural_network.train(True)
-        avg_loss = train_one_epoch(epoch_number, writer, neural_network, loss_fn, training_loader, optimizer)
+        model.train(True)
+        avg_loss = train_one_epoch(epoch_number, writer, model, loss_fn, training_loader, optimizer)
 
         running_vloss = 0.0
         # Set the model to evaluation mode, disabling dropout and using population
         # statistics for batch normalization.
-        neural_network.eval()
+        model.eval()
 
         # Disable gradient computation and reduce memory consumption.
         with torch.no_grad():
             for i, vdata in enumerate(validation_loader):
                 _, vlabels, vinputs = vdata.values()
-                voutputs = neural_network(vinputs)
+                voutputs = model(vinputs)
                 vloss = loss_fn(voutputs, vlabels)
                 running_vloss += vloss
 
@@ -107,6 +106,6 @@ def train(training_set: torch.utils.data.Dataset,
             best_vloss = avg_vloss
             os.makedirs(f'models/model_{timestamp}', exist_ok=True)
             model_path = f'models/model_{timestamp}/epoch_{epoch_number}'
-            torch.save(neural_network.state_dict(), model_path)
+            torch.save(model.state_dict(), model_path)
 
         epoch_number += 1

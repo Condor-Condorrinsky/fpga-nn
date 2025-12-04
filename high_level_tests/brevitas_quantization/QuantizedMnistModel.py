@@ -1,4 +1,5 @@
 import brevitas
+import brevitas.nn
 import torch
 
 
