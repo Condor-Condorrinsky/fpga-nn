@@ -1,9 +1,12 @@
+from torchvision.transforms import v2
 
-class Downscale:
+class Downscale(v2.Transform):
 
     __RGB_VALS = 256
 
     def __init__(self, divisor: int):
+        super().__init__()
+
         assert divisor > 0 and Downscale.__RGB_VALS % divisor == 0,\
             "Divisor must be a positive integer that divides RGB_VALS"
         self.divisor = divisor
