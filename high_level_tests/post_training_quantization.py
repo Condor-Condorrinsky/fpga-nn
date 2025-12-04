@@ -11,7 +11,6 @@ from transforms.ToTensor import ToTensor
 from brevitas_quantization.QuantizedMnistModel import QuantizedMnistModel
 from training import train
 
-# TODO: start QAT fine-tuning for MnistModel
 import brevitas
 import torch
 import torchvision

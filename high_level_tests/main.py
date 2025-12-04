@@ -4,6 +4,7 @@ from transforms.Downscale import Downscale
 from transforms.ToTensor import ToTensor
 from quantize_model import quantize_model
 from training import train
+from brevitas_quantization.QuantizedMnistModel import QuantizedMnistModel
 
 import torch
 import torchvision
@@ -31,3 +32,8 @@ if __name__ == '__main__':
 
     if sys.argv[1] == 'quantize':
         quantize_model(sys.argv[2], sys.argv[3])
+
+    if sys.argv[1] == 'load-quantized':
+        m = QuantizedMnistModel()
+        m.load_state_dict(torch.load('models/eval_quantized/epoch_4'), strict=False)
+        print()
