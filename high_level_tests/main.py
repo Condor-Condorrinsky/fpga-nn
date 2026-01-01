@@ -2,9 +2,10 @@ from mnist.MnistModel import MnistModel
 from mnist.MnistDataset import MnistDataset
 from transforms.Downscale import Downscale
 from transforms.ToTensor import ToTensor
-from quantize_model import quantize_model
+from high_level_tests.utils.quantize_model import quantize_model
 from training import train
 from brevitas_quantization.QuantizedMnistModel import QuantizedMnistModel
+from utils.get_device import get_device
 
 import torch
 import torchvision
@@ -13,6 +14,9 @@ import sys
 
 
 if __name__ == '__main__':
+    dev = get_device()
+    torch.set_default_device(dev)
+
     if sys.argv[1] == 'train':
         transforms = torchvision.transforms.Compose([Downscale(16), ToTensor()])
         train_set = MnistDataset('mnist/MNIST_CSV/mnist_train.csv', transform=transforms)

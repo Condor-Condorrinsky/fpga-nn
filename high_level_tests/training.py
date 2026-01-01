@@ -1,3 +1,5 @@
+from utils.get_device import get_device
+
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
@@ -54,8 +56,14 @@ def train(training_set: torch.utils.data.Dataset,
           momentum: float,
           epochs: int,
           ) -> None:
-    training_loader = torch.utils.data.DataLoader(training_set, batch_size=batch_size, shuffle=True)
-    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, shuffle=False)
+    training_loader = torch.utils.data.DataLoader(training_set,
+                                                  batch_size=batch_size,
+                                                  shuffle=True,
+                                                  generator=torch.Generator(get_device()))
+    validation_loader = torch.utils.data.DataLoader(validation_set,
+                                                    batch_size=batch_size,
+                                                    shuffle=False,
+                                                    generator=torch.Generator(get_device()))
 
     print(f'Training set has {len(training_set)} instances')
     print(f'Validation set has {len(validation_set)} instances')

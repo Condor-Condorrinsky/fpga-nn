@@ -10,12 +10,15 @@ from transforms.ToTensor import ToTensor
 # =========================
 from brevitas_quantization.QuantizedMnistModel import QuantizedMnistModel
 from training import train
+from utils.get_device import get_device
 
 import brevitas
 import torch
 import torchvision
 
 def main():
+    torch.set_default_device(get_device())
+
     model = MnistModel()
     model.load_state_dict(torch.load("models/eval_model/epoch_24"))
     quant_model = QuantizedMnistModel()
