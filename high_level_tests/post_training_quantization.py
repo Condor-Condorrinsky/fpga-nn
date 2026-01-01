@@ -21,7 +21,7 @@ def main():
 
     model = MnistModel()
     model.load_state_dict(torch.load("models/eval_model/epoch_24"))
-    quant_model = QuantizedMnistModel()
+    quant_model = QuantizedMnistModel(bit_width=2)
     quant_model.load_state_dict(model.state_dict(), strict=False)
 
     transforms = torchvision.transforms.Compose([Downscale(16), ToTensor()])

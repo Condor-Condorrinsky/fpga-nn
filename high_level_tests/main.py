@@ -2,7 +2,7 @@ from mnist.MnistModel import MnistModel
 from mnist.MnistDataset import MnistDataset
 from transforms.Downscale import Downscale
 from transforms.ToTensor import ToTensor
-from high_level_tests.utils.quantize_model import quantize_model
+from primitive_quantize_model import quantize_model
 from training import train
 from brevitas_quantization.QuantizedMnistModel import QuantizedMnistModel
 from utils.get_device import get_device
@@ -38,6 +38,6 @@ if __name__ == '__main__':
         quantize_model(sys.argv[2], sys.argv[3])
 
     if sys.argv[1] == 'load-quantized':
-        m = QuantizedMnistModel()
+        m = QuantizedMnistModel(bit_width=2)
         m.load_state_dict(torch.load('models/eval_quantized/epoch_4'), strict=False)
-        print()
+        print(f'Weight QuantTensor:\n {m.q_linear3.quant_weight()}')
