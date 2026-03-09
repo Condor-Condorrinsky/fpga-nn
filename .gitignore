@@ -1,5 +1,6 @@
 .idea/
 venv/
+.venv/
 **/__pycache__/*
 high_level_tests/tinytest.txt
 high_level_tests/runs
