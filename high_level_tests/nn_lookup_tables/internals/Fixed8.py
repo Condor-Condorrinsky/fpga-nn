@@ -1,15 +1,21 @@
 
 class Fixed8:
     BITS = 8
-    # Signed 2's complement
+    # Signed 2's complement. MSB, if set to 1, is a negative power
     LOWER_BOUND = - 2 ** (BITS - 1)
+
+    # Different from LOWER_BOUND! LOWER_BOUND is -128, but by bit representation it is 128 - we don't want Python's
+    # built-in sign to interfere here (internal self.__bits is always positive). Such discrepancy doesn't appear for
+    # positive numbers like UPPER_BOUND
+    __LOWER_BOUND_BITS = 0b10000000
+
     UPPER_BOUND = 2 ** (BITS - 1) - 1
     TOTAL_VALS = 2 ** BITS
 
     def __init__(self, internal_bits: int = 0, decimal_pos: int | None = None) -> None:
 
-        if internal_bits < 0 or internal_bits > self.TOTAL_VALS:
-            raise ValueError("Internal bits out of range for Fixed8")
+        # if internal_bits < 0 or internal_bits > self.TOTAL_VALS:
+        #     raise ValueError("Internal bits out of range for Fixed8")
         self.__bits = internal_bits
 
         if decimal_pos is None:
@@ -22,10 +28,17 @@ class Fixed8:
 
     @classmethod
     def from_integer(cls, integer: int) -> "Fixed8":
+
         if integer < Fixed8.LOWER_BOUND:
-            return cls(internal_bits=Fixed8.LOWER_BOUND, decimal_pos=0)
+            return cls(internal_bits=Fixed8.__LOWER_BOUND_BITS, decimal_pos=0)
         if integer > Fixed8.UPPER_BOUND:
             return cls(internal_bits=Fixed8.UPPER_BOUND, decimal_pos=0)
+
+        sign = cls.signum_fixed8(integer)
+        if sign < 0:
+            flipped = Fixed8.not_fixed8(integer)
+            return cls(internal_bits=flipped + 1, decimal_pos=0)
+
         return cls(internal_bits=integer, decimal_pos=0)
 
     @classmethod
@@ -36,12 +49,35 @@ class Fixed8:
     def from_float(cls, floating: float) -> "Fixed8":
         pass
 
+
     @staticmethod
-    def __is_power_of_2(n: int) -> bool:
+    def signum_fixed8(num: int | float) -> int:
+        # 0 has a "positive" sign too in fixed numbers
+        return -1 if num < 0 else 1
+
+    @staticmethod
+    def not_fixed8(integer: int) -> int:
+        return Fixed8.TOTAL_VALS - integer
+
+    @staticmethod
+    def is_power_of_2(n: int) -> bool:
         return (n & (n - 1) == 0) and n != 0
 
     def to_decimal(self) -> int:
-        pass
+        if self.__decimal_pos == 0:
+            sign = self.__bits & 0b10000000
+            return - sign + (self.__bits - sign)
+        else:
+            return -1
 
 if __name__ == '__main__':
-    fixed_8 = Fixed8()
+    a = Fixed8.from_integer(5)
+    print(a.to_decimal())
+    b = Fixed8.from_integer(0)
+    print(b.to_decimal())
+    c = Fixed8.from_integer(-100)
+    print(c.to_decimal())
+    d = Fixed8.from_integer(300)
+    print(d.to_decimal())
+    e = Fixed8.from_integer(-300)
+    print(e.to_decimal())
